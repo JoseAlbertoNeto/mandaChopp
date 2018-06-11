@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/backgroundWallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/verifiry_connection" />
+
+    <ImageView
+        android:id="@+id/wifiConnectedBar"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/bluetoothConnectedBar"
+        android:layout_marginBottom="122dp"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/connected_bar"
+        tools:layout_width="336dp" />
+
+    <ImageView
+        android:id="@+id/serverConnectedBar"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/bluetoothConnectedBar"
+        android:layout_marginTop="179dp"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/connected_bar"
+        tools:layout_width="336dp" />
+
+    <ImageView
+        android:id="@+id/bluetoothConnectedBar"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="62dp"
+        android:scaleType="fitXY"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/connected_bar"
+        tools:layout_width="336dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="24dp"
+        android:layout_height="21dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="436dp"
+        android:layout_marginTop="69dp"
+        android:translationY="0dp" />
+
+    <CheckedTextView
+        android:id="@+id/wifiText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/serverText"
+        android:layout_alignTop="@+id/progressBar"
+        android:fontFamily="monospace"
+        android:text="Connecting wi-fi"
+        android:textSize="16sp" />
+
+    <CheckedTextView
+        android:id="@+id/serverText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/btText"
+        android:layout_marginBottom="134dp"
+        android:fontFamily="monospace"
+        android:text="Waiting server validation"
+        android:textSize="16sp" />
+
+    <CheckedTextView
+        android:id="@+id/btText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="151dp"
+        android:layout_marginTop="188dp"
+        android:fontFamily="monospace"
+        android:text="Waiting bluetooth validation"
+        android:textSize="16sp" />
+
+</RelativeLayout>
