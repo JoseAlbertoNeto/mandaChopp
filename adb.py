@@ -5,17 +5,13 @@ class ADB:
 
 	def __init__(self):
 		self.listOfDevicesAttached = {};#listOfDevicesAttached[deviceID] = deviceState
-		
-	def checkAirplaneMode(self, deviceID):
-		adbCommand       = 'adb -s ' + deviceID + ' shell settings get global airplane_mode_on';
-		return self.sendADB(adbCommand, deviceID);
-		
+			
 	def clearLogcat(self, deviceID):
 		adbCommand       = 'adb -s ' + deviceID + ' logcat -b all -c';
 		self.sendADB(adbCommand, deviceID);
 		
 	def getAttachedDevices(self):
-		cmdAnswer = self.sendADB('adb devices');
+		cmdAnswer = os.popen('adb devices').read().replace('\r\n','');
 		buffer    = io.StringIO(cmdAnswer);#convert cmdAnswer to string
 		buffer.readline(); #ignores first line where the text is 'List of devices attached'
 		answer    = buffer.readline();
@@ -47,12 +43,24 @@ class ADB:
 	def getSalesCode(self, deviceID):
 		adbCommand       = 'adb -s ' + deviceID + ' shell getprop ro.csc.sales_code';
 		return self.sendADB(adbCommand);
-			
+		
+	def getSPN(self, deviceID):
+		adbCommand       = 'adb -s ' + deviceID + ' shell getprop gsm.operator.alpha';
+		return self.sendADB(adbCommand);
+		
+	def isAirplaneModeOn(self, deviceID):
+		adbCommand       = 'adb -s ' + deviceID + ' shell settings get global airplane_mode_on';
+		return self.sendADB(adbCommand);		
+		
 	def isDeviceConnected(self, deviceID):
 		if( self.listOfDevicesAttached.get(deviceID) and self.listOfDevicesAttached[deviceID] != "unauthorized"):
 			return True;
 		return False;
-					
+		
+	def isInRoaming(self, deviceID):
+		adbCommand       = 'adb -s ' + deviceID + ' shell getprop gsm.operator.isroaming';
+		return self.sendADB(adbCommand);		
+	
 	def printAttachedDevices(self):
 		self.getAttachedDevices();
 		
@@ -65,11 +73,9 @@ class ADB:
 				print  ( 'Operational Sytem:' + self.listOfDevicesAttached.get(device)[2]);
 	
 	def searchNetworks(self, deviceID):
+		adbCommand       = 'adb -s ' + deviceID + ' shell am start -n com.android.phone/com.android.phone.NetworkSetting';
+		self.sendADB(adbCommand);
 		adbCommand       = 'adb -s ' + deviceID + ' logcat -b radio -d | find "QUERY_AVAILABLE_NETWORKS"';
-		return self.sendADB(adbCommand);
-		
-	def searchNetworksResult(self, deviceID):
-		adbCommand       = 'adb -s ' + deviceID + ' logcat -b radio -d | find "OPERATOR"';
 		return self.sendADB(adbCommand);
 		
 	def selectDevice(self):
@@ -117,15 +123,27 @@ class ADB:
 				return None
 				
 	def sendADB(self, command):
-		answer = os.popen(command).read().replace('\r\n','');
+		answer = os.popen(command).read().replace('\n','');
 		return answer;
 		
-	def sim(self, deviceID, mcc, mnc, msin, spn)
+	def setAirPlaneModeOff(self, deviceID):
+		adbCommand = 'adb -s ' + deviceID + ' shell settings put global airplane_mode_on 0';
+		answer     = self.sendADB(adbCommand);
+		adbCommand = 'adb -s ' + deviceID + ' shell am broadcast -a android.intent.action.AIRPLANE_MODE';
+		answer     = self.sendADB(adbCommand);
+		
+	def setAirPlaneModeOn(self, deviceID):
+		adbCommand = 'adb -s ' + deviceID + ' shell settings put global airplane_mode_on 1';
+		answer     = self.sendADB(adbCommand);
+		adbCommand = 'adb -s ' + deviceID + ' shell am broadcast -a android.intent.action.AIRPLANE_MODE';
+		answer     = self.sendADB(adbCommand);
+	
+	def sim(self, deviceID, mcc, mnc, msin, spn):
 		adbCommand       = 'adb shell am start -n com.jose.myapplication/com.jose.myapplication.MainActivity';
-		answer = os.popen(command).read().replace('\r\n','');
+		answer = self.sendADB(adbCommand);
 		adbCommand       = 'adb -s ' + deviceID + ' shell am broadcast -a SysmocomBroadcast --es mcc ' + mcc +' --es mnc ' + mnc+' --es msin ' + msin +' --es spn ' + spn;
-		answer = os.popen(command).read().replace('\r\n','');
-			
+		answer = self.sendADB(adbCommand);
+		
 	def waitForDevice(self, deviceID):
 		adbCommand       = 'adb -s ' + deviceID + ' wait-for-device';
 		self.sendADB(adbCommand);
@@ -134,14 +152,8 @@ def main():
 	adb = ADB();
 	id = adb.selectDevice();	
 	
-	
-	#ans = adb.checkAirplaneMode(id);
-	#print(ans)
-	if(id == None):
-		print('None')
-	else:
-		print(id)
-	
+	print (adb.isInRoaming(id));
+	print (adb.getSPN(id));
 				
 	
 if __name__ == '__main__':
